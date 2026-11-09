@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!-- Simple 2-link running leg: pelvis (fixed) -> hip -> thigh -> knee -> shank -> foot.
+     Forward is +x, up is +z. Lengths are roughly an adult leg. -->
+<robot name="rfr_leg">
+
+  <material name="grey"><color rgba="0.6 0.6 0.6 1"/></material>
+  <material name="blue"><color rgba="0.2 0.4 0.8 1"/></material>
+  <material name="orange"><color rgba="0.9 0.5 0.1 1"/></material>
+  <material name="dark"><color rgba="0.2 0.2 0.2 1"/></material>
+
+  <!-- Pelvis: held fixed in space -->
+  <link name="base_link">
+    <visual>
+      <geometry><box size="0.12 0.25 0.10"/></geometry>
+      <material name="grey"/>
+    </visual>
+  </link>
+
+  <!-- Hip: positive angle swings the thigh forward (flexion) -->
+  <joint name="hip_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="thigh"/>
+    <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-0.6" upper="1.0" effort="100" velocity="10"/>
+  </joint>
+
+  <link name="thigh">
+    <visual>
+      <origin xyz="0 0 -0.225" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.04" length="0.45"/></geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+
+  <!-- Knee: positive angle bends the shank backward (flexion) -->
+  <joint name="knee_joint" type="revolute">
+    <parent link="thigh"/>
+    <child link="shank"/>
+    <origin xyz="0 0 -0.45" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0.0" upper="2.4" effort="100" velocity="10"/>
+  </joint>
+
+  <link name="shank">
+    <visual>
+      <origin xyz="0 0 -0.215" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.035" length="0.43"/></geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <!-- Foot: rigidly attached to the shank for now -->
+  <joint name="ankle_joint" type="fixed">
+    <parent link="shank"/>
+    <child link="foot"/>
+    <origin xyz="0 0 -0.43" rpy="0 0 0"/>
+  </joint>
+
+  <link name="foot">
+    <visual>
+      <origin xyz="0.05 0 -0.02" rpy="0 0 0"/>
+      <geometry><box size="0.20 0.08 0.04"/></geometry>
+      <material name="dark"/>
+    </visual>
+  </link>
+
+</robot>
